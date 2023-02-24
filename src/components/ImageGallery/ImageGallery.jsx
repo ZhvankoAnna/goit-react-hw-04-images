@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 import css from './image-gallery.module.css';
 
-const ImageGallery = ({ images=[], showModal }) => {
+const ImageGallery = ({ images = [], showModal }) => {
   return (
     <ul className={css.gallery}>
       {images.map(({ id, webformatURL, largeImageURL, tags }) => (

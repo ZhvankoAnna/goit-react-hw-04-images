@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { SlClose } from 'react-icons/sl';
@@ -6,40 +6,35 @@ import css from './modal.module.css';
 
 const modalRootEl = document.getElementById('modal-root');
 
-class Modal extends Component {
-  static propTypes={
-    onClose: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired
-  }
+const Modal = ({ children, onClose }) => {
+  useEffect(() => {
+    document.body.addEventListener('keydown', handleClose);
+    return () => document.body.removeEventListener('keydown', handleClose);
+    // eslint-disable-next-line
+  }, []);
 
-  componentDidMount() {
-    document.body.addEventListener('keydown', this.handleClose);
-  }
-
-  componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.handleClose);
-  }
-
-  handleClose = ({ target, currentTarget, code }) => {
+  const handleClose = ({ target, currentTarget, code }) => {
     if (target === currentTarget || code === 'Escape') {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  render() {
-    const { children, onClose } = this.props;
-    return createPortal(
-      <div className={css.overlay} onClick={this.handleClose}>
-        <div className={css.modal}>
-          <button className={css.button} type="button" onClick={onClose}>
-            <SlClose className={css.icon} />
-          </button>
-          {children}
-        </div>
-      </div>,
-      modalRootEl
-    );
-  }
-}
+  return createPortal(
+    <div className={css.overlay} onClick={handleClose}>
+      <div className={css.modal}>
+        <button className={css.button} type="button" onClick={onClose}>
+          <SlClose className={css.icon} />
+        </button>
+        {children}
+      </div>
+    </div>,
+    modalRootEl
+  );
+};
 
 export default Modal;
+
+Modal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+};
