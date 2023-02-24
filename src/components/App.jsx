@@ -18,13 +18,7 @@ const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [imageProps, setImageProps] = useState({});
 
-  const firstRender = useRef(true);
-
   useEffect(() => {
-    if(firstRender.current){
-      firstRender.current = false;
-      return;
-    }
     const getFetch = async () => {
       try {
         const { data } = await searchImg(search, page);
@@ -38,8 +32,10 @@ const App = () => {
       }
     };
 
-    setStatus('pending');
-    getFetch();
+    if (search !== '') {
+      setStatus('pending');
+      getFetch();
+    }
   }, [search, page]);
 
   const getFormData = data => {
